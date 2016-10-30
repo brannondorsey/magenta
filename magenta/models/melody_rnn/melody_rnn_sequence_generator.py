@@ -92,7 +92,11 @@ class MelodyRnnSequenceGenerator(mm.BaseSequenceGenerator):
     extracted_melodies, _ = mm.extract_melodies(
         quantized_sequence, min_bars=0, min_unique_pitches=1,
         gap_bars=float('inf'), ignore_polyphonic_notes=True)
-    assert len(extracted_melodies) <= 1
+    if len(extracted_melodies) > 1:
+        raise mm.SequenceGeneratorException(
+            'Too many melodies found in primer sequence, cannot disambiguate to '
+            'peform a melody extraction. Make sure that at only one monophonic '
+            'track is present in the primer sequence.')
 
     qpm = (primer_sequence.tempos[0].qpm
            if primer_sequence and primer_sequence.tempos
